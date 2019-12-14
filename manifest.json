@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "PDFify",
+  "version": "1",
+  "permissions": ["tabs", "activeTab"],
+  "browser_action": { "default_icon": "assets/icon.png" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "dependencies/html2canvas.min.js",
+        "dependencies/jspdf.min.js",
+        "content.js"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
