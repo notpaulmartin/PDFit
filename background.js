@@ -4,7 +4,7 @@
  * File Created:  Saturday, 14th December 2019 3:18:59 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Saturday, 14th December 2019 8:35:29 pm
+ * Last Modified: Sunday, 15th December 2019 3:47:43 pm
  * Modified By:   Paul Martin (paul@blibspace.com)
  */
 
@@ -22,13 +22,17 @@ main = tab => {
   });
 
   // Send a message to the active tab
-  function sendToContentJS(message, data = '') {
+  function sendToContentJS(message, data = '', responseCallback = () => {}) {
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       var activeTab = tabs[0];
-      chrome.tabs.sendMessage(activeTab.id, {
-        message: message,
-        data: data
-      });
+      chrome.tabs.sendMessage(
+        activeTab.id,
+        {
+          message: message,
+          data: data
+        },
+        responseCallback
+      );
     });
   }
 
