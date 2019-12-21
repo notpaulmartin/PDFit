@@ -9,7 +9,7 @@
  */
 
 // Called when the user clicks on the browser action.
-main = tab => {
+main = tab => { 
   // take screenshot
   chrome.tabs.captureVisibleTab(imgData => {
     // generate an Image object from imgData
