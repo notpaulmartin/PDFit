@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "PDFify",
   "version": "1",
-  "permissions": ["tabs", "activeTab"],
+  "permissions": ["tabs", "activeTab", "<all_urls>"],
   "browser_action": { "default_icon": "assets/icon.png" },
   "content_scripts": [
     {
@@ -15,6 +15,10 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "dependencies/image-to-slices.js",
+      "img_magic.js",
+      "background.js"
+    ]
   }
 }
