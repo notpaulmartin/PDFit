@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 /*
  * File:          background.js
  * Project:       PDFme
  * File Created:  Saturday, 14th December 2019 3:18:59 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Saturday, 28th December 2019 1:15:13 pm
+ * Last Modified: Thursday, 16th January 2020 5:10:46 pm
  * Modified By:   Paul Martin (paul@blibspace.com)
  */
 
@@ -14,6 +13,17 @@
  * @param {chrome-tab} tab
  */
 async function main(tab) {
+  // position the user was initially at, to scroll to
+  const initialScrollPosition = await sendToContentJS(
+    'initial_scroll_position'
+  );
+
+  const vh = await sendToContentJS('viewport_height');
+  const scrollAmount = vh - marginTop / 2 - marginBottom / 2;
+
+  // hide scrollbar
+  sendToContentJS('hide_scrollbar');
+
   // the array containing the individual screenshots
   const screenshots = [];
 
@@ -29,12 +39,15 @@ async function main(tab) {
             })
             .then(() => {
               // scroll down again
-              sendToContentJS('scroll_down', 'viewport')
+              sendToContentJS('scroll_down', scrollAmount)
                 .then(screenshotLoop) // recursively
                 .then(resolve); // iterate base case back to beginning
             });
           break;
         case 'at_bottom': // base case
+          // revert to initial state
+          sendToContentJS('unhide_scrollbar');
+          sendToContentJS('scroll_to_position', initialScrollPosition);
           resolve(screenshots);
           break;
         default:
@@ -49,11 +62,19 @@ async function main(tab) {
       // display the html in a new window
       const w = window.open('', 'imgWindow', 'width=800,height=600');
       w.document.write(imgsHtml);
+      w.focus();
+      setTimeout(() => {
+        w.print();
+      }, 1000);
+      w.onafterprint = () => {
+        w.close();
+      };
     });
 }
 
 /**
  * A function to send data to and receive from content.js
+ *
  * @param {string} message The name under which the data is passed to content.js
  * @param {string} data
  * @return {Promise<any>} The response sent by content.js (may never resolve)

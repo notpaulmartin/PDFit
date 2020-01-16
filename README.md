@@ -1,14 +1,14 @@
 # PDFme
 
+**PDFme is a Chrome extension to convert a website to PDF, splitting it into individual A4 pages.**
+
+**_What you see is what you get!_**
+
 If you have ever tried printing a webpage or converting it to a multipage PDF, you've encountered this issue: More often than not the print dialogue completely massacres the entire website.
 
 But how can it be that in a world of self-driving cars and quantum computers, you still can't properly print websites?
 
 This is why, together with my good friend [Alexandra](https://github.com/alexandrapurcarea), I decided to tackle this very problem and develop a simple Chrome extension that enables the printing of webpages as is.
-
-**PDFme is a Chrome extension to convert a website to PDF, splitting it into individual A4 pages.**
-
-**_What you see is what you get!_**
 
 ## Installation
 
@@ -25,13 +25,14 @@ To convert the current tab to PDF, just click on the extension in your address b
 
 ## Todo
 
-- Create a logo/icon
-- Return to the user's scroll position before capturing
-- Don't capture the scroll bar
-- Automatically open the print dialogue in new window
-  - Close window once printed
-- Dynamically slice the screenshots to completely fill the A4 pages
-- Only capture the middle portion of the screen. That way the navbar will be captured only once.
+- [ ] Create a logo/icon
+- [x] Return to the user's scroll position before capturing
+- [x] Don't capture the scroll bar
+- [x] Automatically open the print dialogue in new window
+  - [x] Close window once printed
+- [ ] Dynamically slice the screenshots to completely fill the A4 pages
+- [x] Only capture the middle portion of the screen. That way the navbar will be captured only once.
+- [ ] Delete duplicated section at the bottom of the document
 
 ## Contributing
 

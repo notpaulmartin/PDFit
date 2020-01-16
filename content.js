@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 /*
  * File:          content.js
  * Project:       PDFme
  * File Created:  Saturday, 14th December 2019 3:18:56 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Friday, 27th December 2019 9:52:00 pm
+ * Last Modified: Thursday, 16th January 2020 4:49:56 pm
  * Modified By:   Paul Martin (paul@blibspace.com)
  */
 
@@ -19,30 +18,58 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       sendResponse(getViewportHeight());
       break;
 
+    case 'initial_scroll_position':
+      sendResponse([window.scrollX, window.scrollY]);
+      break;
+
+    case 'scroll_to_position': {
+      const [x, y] = request.data;
+      window.scrollTo(x, y);
+      break;
+    }
+
     case 'scroll_to_top':
       window.scrollTo(0, 0);
       sendResponse('scrolled');
       break;
 
     case 'scroll_down':
-      if (atBottom()) {
+      if (isAtBottom()) {
         sendResponse('at_bottom');
         break;
       }
 
+      // scroll by viewport height
       if (request.data === 'viewport') {
         const vh = getViewportHeight();
         window.scrollBy(0, vh);
         sendResponse('scrolled');
+      } else {
+        // scroll by specified amount
+        window.scrollBy(0, request.data);
+        sendResponse('scrolled');
       }
       break;
+
+    case 'hide_scrollbar':
+      {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'hide_scrollbar';
+        styleElement.innerHTML = 'body::-webkit-scrollbar {display: none;}';
+        document.body.appendChild(styleElement);
+      }
+      break;
+
+    case 'unhide_scrollbar':
+      document.querySelector('style#hide_scrollbar').remove();
+      break;
+
     default:
-      console.error('unkown message');
       sendResponse('unknown message');
   }
 });
 
-function atBottom() {
+function isAtBottom() {
   const vh = getViewportHeight();
   const pageHeight = getPageHeight();
   const atPageBottom = vh + window.scrollY >= pageHeight;
