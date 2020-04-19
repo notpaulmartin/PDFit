@@ -1,6 +1,6 @@
-# PDFme
+# PDFit
 
-**PDFme is a Chrome extension to convert a website to PDF, splitting it into individual A4 pages.**
+**PDFit is a Chrome extension to convert a website to PDF, splitting it into individual A4 pages.**
 
 **_What you see is what you get!_**
 
@@ -25,14 +25,14 @@ To convert the current tab to PDF, just click on the extension in your address b
 
 ## Todo
 
-- [ ] Create a logo/icon
+- [x] Create a logo/icon
 - [x] Return to the user's scroll position before capturing
 - [x] Don't capture the scroll bar
 - [x] Automatically open the print dialogue in new window
   - [x] Close window once printed
 - [ ] Dynamically slice the screenshots to completely fill the A4 pages
 - [x] Only capture the middle portion of the screen. That way the navbar will be captured only once.
-- [ ] Delete duplicated section at the bottom of the document
+- [x] Delete duplicated section at the bottom of the document
 
 ## Contributing
 
@@ -41,3 +41,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Attributions
+
+Logo icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
