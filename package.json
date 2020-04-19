@@ -1,6 +1,6 @@
 {
-  "name": "pdfme",
-  "version": "1.0.0",
+  "name": "pdfit",
+  "version": "0.2",
   "description": "If you have ever tried printing a webpage or converting it to a multipage PDF, you've encountered this issue: More often than not the print dialogue completely massacres the entire website.",
   "main": "background.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/notpaulmartin/PDFme.git"
+    "url": "git+https://github.com/notpaulmartin/PDFit.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/notpaulmartin/PDFme/issues"
+    "url": "https://github.com/notpaulmartin/PDFit/issues"
   },
-  "homepage": "https://github.com/notpaulmartin/PDFme#readme",
+  "homepage": "https://github.com/notpaulmartin/PDFit#readme",
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",

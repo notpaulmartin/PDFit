@@ -4,11 +4,11 @@
  * File Created:  Saturday, 14th December 2019 3:18:56 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Thursday, 16th January 2020 4:49:56 pm
- * Modified By:   Paul Martin (paul@blibspace.com)
+ * Last Modified: Sunday, 19th April 2020 5:10:59 pm
+ * Modified By:   Paul Martin
  */
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   switch (request.message) {
     case 'viewport_width':
       sendResponse(getViewportWidth());
@@ -16,6 +16,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     case 'viewport_height':
       sendResponse(getViewportHeight());
+      break;
+
+    case 'page_height':
+      sendResponse(getPageHeight());
       break;
 
     case 'initial_scroll_position':

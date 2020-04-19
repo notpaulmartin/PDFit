@@ -4,8 +4,8 @@
  * File Created:  Saturday, 14th December 2019 3:18:59 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Thursday, 16th January 2020 5:10:46 pm
- * Modified By:   Paul Martin (paul@blibspace.com)
+ * Last Modified: Sunday, 19th April 2020 5:12:06 pm
+ * Modified By:   Paul Martin
  */
 
 /**
@@ -19,6 +19,7 @@ async function main(tab) {
   );
 
   const vh = await sendToContentJS('viewport_height');
+  const pageHeight = await sendToContentJS('page_height');
   const scrollAmount = vh - marginTop / 2 - marginBottom / 2;
 
   // hide scrollbar
@@ -27,13 +28,13 @@ async function main(tab) {
   // the array containing the individual screenshots
   const screenshots = [];
 
-  const screenshotLoop = response =>
+  const screenshotLoop = (response) =>
     new Promise((resolve, reject) => {
       switch (response) {
         case 'scrolled':
           sleep(30);
           takeScreenshot()
-            .then(imgData => {
+            .then((imgData) => {
               // add screenshot to list
               screenshots.push(imgData);
             })
@@ -57,8 +58,8 @@ async function main(tab) {
 
   sendToContentJS('scroll_to_top')
     .then(screenshotLoop)
-    .then(concatImgs) // convert image data to html
-    .then(imgsHtml => {
+    .then((imgDatas) => concatImgs(imgDatas, vh, pageHeight)) // convert image data to html
+    .then((imgsHtml) => {
       // display the html in a new window
       const w = window.open('', 'imgWindow', 'width=800,height=600');
       w.document.write(imgsHtml);
@@ -66,9 +67,10 @@ async function main(tab) {
       setTimeout(() => {
         w.print();
       }, 1000);
-      w.onafterprint = () => {
-        w.close();
-      };
+      // TODO: uncomment
+      // w.onafterprint = () => {
+      //   w.close();
+      // };
     });
 }
 
@@ -81,13 +83,13 @@ async function main(tab) {
  */
 const sendToContentJS = (message, data = '') =>
   new Promise((resolve, reject) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const activeTab = tabs[0];
       chrome.tabs.sendMessage(
         activeTab.id,
         {
           message,
-          data
+          data,
         },
         resolve
       );
@@ -96,7 +98,7 @@ const sendToContentJS = (message, data = '') =>
 
 const takeScreenshot = () =>
   new Promise((resolve, reject) => {
-    chrome.tabs.captureVisibleTab(imgData => resolve(imgData));
+    chrome.tabs.captureVisibleTab((imgData) => resolve(imgData));
   });
 
 /**
