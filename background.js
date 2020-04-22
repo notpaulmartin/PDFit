@@ -4,7 +4,7 @@
  * File Created:  Saturday, 14th December 2019 3:18:59 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Wednesday, 22nd April 2020 5:05:39 pm
+ * Last Modified: Wednesday, 22nd April 2020 6:24:26 pm
  * Modified By:   Paul Martin
  */
 
@@ -64,6 +64,8 @@ async function main(tab) {
     .then(sliceImgs) // slice images in half so they better fit on an A4 sheet
     .then(concatImgs) // convert image data to html
     .then(printHtml); // open in pop-up and open print dialogue
+  // .then((b64Imgs) => sendToContentJS('print_imgs', b64Imgs));
+  // .then((html) => sendToContentJS('print_html', html));
 }
 
 /**
@@ -72,16 +74,14 @@ async function main(tab) {
  */
 function printHtml(imgsHtml) {
   // display the html in a new window
-  const w = window.open('', 'imgWindow', 'width=800,height=600');
-  w.document.write(imgsHtml);
+  const w = window.open('', 'imgWindow', 'width=580,height=460');
+  w.document.write(imgsHtml); // add imgs
+  w.document.write('<style>body { margin: 0; }</style>'); // set style
   w.focus();
   setTimeout(() => {
-    w.print();
-  }, 1000);
-  // TODO: uncomment
-  w.onafterprint = () => {
-    w.close();
-  };
+    w.print(); // open print dialogue
+    w.close(); // close window when done
+  });
 }
 
 /**
