@@ -7,11 +7,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": [
-        "dependencies/html2canvas.min.js",
-        "dependencies/jspdf.min.js",
-        "content.js"
-      ]
+      "js": ["content.js"]
     }
   ],
   "background": {
