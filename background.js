@@ -4,7 +4,7 @@
  * File Created:  Saturday, 14th December 2019 3:18:59 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Sunday, 19th April 2020 5:12:06 pm
+ * Last Modified: Wednesday, 22nd April 2020 5:05:39 pm
  * Modified By:   Paul Martin
  */
 
@@ -20,7 +20,9 @@ async function main(tab) {
 
   const vh = await sendToContentJS('viewport_height');
   const pageHeight = await sendToContentJS('page_height');
-  const scrollAmount = vh - marginTop / 2 - marginBottom / 2;
+  const devicePixelRatio = await sendToContentJS('device_pixel_ratio');
+  // const scrollAmount = vh - (marginTop + marginBottom) / 2;
+  const scrollAmount = vh - marginTop - marginBottom;
 
   // hide scrollbar
   sendToContentJS('hide_scrollbar');
@@ -32,7 +34,7 @@ async function main(tab) {
     new Promise((resolve, reject) => {
       switch (response) {
         case 'scrolled':
-          sleep(30);
+          sleep(40);
           takeScreenshot()
             .then((imgData) => {
               // add screenshot to list
@@ -58,20 +60,28 @@ async function main(tab) {
 
   sendToContentJS('scroll_to_top')
     .then(screenshotLoop)
-    .then((imgDatas) => concatImgs(imgDatas, vh, pageHeight)) // convert image data to html
-    .then((imgsHtml) => {
-      // display the html in a new window
-      const w = window.open('', 'imgWindow', 'width=800,height=600');
-      w.document.write(imgsHtml);
-      w.focus();
-      setTimeout(() => {
-        w.print();
-      }, 1000);
-      // TODO: uncomment
-      // w.onafterprint = () => {
-      //   w.close();
-      // };
-    });
+    .then((imgDatas) => trimImgs(imgDatas, pageHeight, vh)) // convert image data to html
+    .then(sliceImgs) // slice images in half so they better fit on an A4 sheet
+    .then(concatImgs) // convert image data to html
+    .then(printHtml); // open in pop-up and open print dialogue
+}
+
+/**
+ * Open a new window with the html contents and opens the print dialogue. Can be used to save as a pdf
+ * @param {string} imgsHtml
+ */
+function printHtml(imgsHtml) {
+  // display the html in a new window
+  const w = window.open('', 'imgWindow', 'width=800,height=600');
+  w.document.write(imgsHtml);
+  w.focus();
+  setTimeout(() => {
+    w.print();
+  }, 1000);
+  // TODO: uncomment
+  w.onafterprint = () => {
+    w.close();
+  };
 }
 
 /**

@@ -4,7 +4,7 @@
  * File Created:  Sunday, 15th December 2019 3:40:08 pm
  * Author(s):     Paul Martin
  *
- * Last Modified: Sunday, 19th April 2020 5:54:10 pm
+ * Last Modified: Wednesday, 22nd April 2020 5:03:04 pm
  * Modified By:   Paul Martin
  */
 
@@ -12,7 +12,7 @@ const { imageToSlices } = window;
 
 // area at top and bottom of screen to not include in screenshots (e.g. navbar)
 const marginTop = 150;
-const marginBottom = 150;
+const marginBottom = 50;
 
 imgs2pdf = (shots) => {
   // eslint-disable-next-line new-cap
@@ -29,44 +29,28 @@ imgs2pdf = (shots) => {
  * @param {array} imgs List of image data to concat
  * @return {string} html with the concatenated image obejcts
  */
-async function concatImgs(imgs = [], pageHeight, viewportHeight) {
-  let trimmedImgs;
-
-  if (imgs.length > 1) {
-    // (More than one screenshots)
-
-    // trim all images except first and last (remove top and bottom -> navbar & other fixed elements)
-    const promisedTrims = imgs
-      .slice(1, imgs.length - 1)
-      .map((img) => trim(img, { top: marginTop, bottom: marginBottom }));
-
-    // First image: don't trim top
-    promisedTrims.unshift(trim(imgs[0], { bottom: marginBottom }));
-
-    // Last image: don't trim bottom; remove overlap with second-to-last image
-    lastImgOverlap = viewportHeight - (pageHeight % viewportHeight);
-    promisedTrims.push(
-      trim(imgs[imgs.length - 1], { top: marginTop + lastImgOverlap })
-    );
-
-    // wait for trimming to complete
-    trimmedImgs = await Promise.all(promisedTrims);
-  } else {
-    // (Only one screen shot)
-    trimmedImgs = imgs;
-  }
-
-  // then slice them to better fit them on A4 pages
-  const promisedSlices = trimmedImgs.map((img) => slice(img));
-  const slicedImgs = (await Promise.all(promisedSlices)) // slice all images simultaneously
-    .flat() // flatten from [ [{},{}], ... ] to [ {}, ... ]
-    .map((obj) => obj.dataURI); // extract only the image data
-
-  const html = slicedImgs
+async function concatImgs(imgs = []) {
+  const html = imgs
     .map((dataURI) => `<img src="${dataURI}" width="100%">`) // convert to simple html object
     .join('\n'); // concat array of html objects to string
 
   return html;
+}
+
+/**
+ * Slices a list of image dataURIs horizontally into multiple images, to fit them better on A4 pages
+ * @param {[]string} imgs List of image data to slice (As dataURIs)
+ */
+async function sliceImgs(imgs = []) {
+  // Slice images
+  const promisedSlices = imgs.map((img) => slice(img));
+
+  // Wait for slicing to complete
+  const slicedImgs = (await Promise.all(promisedSlices))
+    .flat() // flatten from [ [{},{}], ... ] to [ {}, ... ]
+    .map((obj) => obj.dataURI); // extract only the image data
+
+  return slicedImgs;
 }
 
 const slice = (imgDataURI) =>
@@ -90,12 +74,72 @@ const slice = (imgDataURI) =>
   });
 
 /**
+ * Trims a list of image dataURIs to get rid of unwanted parts at the top and bottom of the page (e.g. navbar)
+ * @param {string} imgs List of image data to trim (As dataURIs)
+ * @param {int} pageHeight Height of entire webpage (pixels)
+ * @param {int} viewportHeight Height of viewport (pixels)
+ */
+async function trimImgs(imgs = [], pageHeight, viewportHeight) {
+  const devicePixelRatio = window.devicePixelRatio;
+
+  let trimmedImgs;
+
+  if (imgs.length > 1) {
+    // (More than one screenshots)
+
+    // trim all images except first and last (remove top and bottom -> navbar & other fixed elements)
+    const promisedTrims = imgs
+      .slice(1, imgs.length - 1)
+      .map((img) =>
+        trim(img, { top: marginTop, bottom: marginBottom }, devicePixelRatio)
+      );
+
+    // First image: don't trim top
+    promisedTrims.unshift(
+      trim(imgs[0], { bottom: marginBottom }, devicePixelRatio)
+    );
+
+    // Last image: don't trim bottom; remove overlap with second-to-last image
+    const trimmedPageHeight = pageHeight - marginTop - marginBottom;
+    const trimmedViewportHeight = viewportHeight - marginTop - marginBottom;
+    const lastImgOverlap =
+      trimmedViewportHeight - (trimmedPageHeight % trimmedViewportHeight);
+
+    promisedTrims.push(
+      trim(
+        imgs[imgs.length - 1],
+        { top: marginTop + lastImgOverlap },
+        devicePixelRatio
+      )
+    );
+
+    // wait for trimming to complete
+    trimmedImgs = await Promise.all(promisedTrims);
+  } else {
+    // (Only one screenshot)
+    trimmedImgs = imgs;
+  }
+
+  return trimmedImgs;
+}
+
+/**
  * Trims the specified amount of pixels from each side of the image, shrinking it
  *
  * @param {string} dataURI - Image to crop
  * @param {object} {top, bottom, left, right}
  */
-function trim(dataURI, { top = 0, bottom = 0, left = 0, right = 0 } = {}) {
+function trim(
+  dataURI,
+  { top = 0, bottom = 0, left = 0, right = 0 } = {},
+  devicePixelRatio = 1
+) {
+  // Number of css pixels doesn't always exactly correspond to number of actual pixels
+  top *= devicePixelRatio;
+  bottom *= devicePixelRatio;
+  left *= devicePixelRatio;
+  right *= devicePixelRatio;
+
   return new Promise((resolve, reject) => {
     const inputImage = new Image();
     const outputImageCanvas = document.createElement('canvas');

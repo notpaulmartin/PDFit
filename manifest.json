@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "PDFit",
-  "version": "1",
+  "version": "0.0.1",
   "permissions": ["tabs", "activeTab", "<all_urls>"],
   "browser_action": { "default_icon": "assets/icon.png" },
   "content_scripts": [

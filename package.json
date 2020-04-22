@@ -1,6 +1,6 @@
 {
   "name": "pdfit",
-  "version": "0.2",
+  "version": "0.0.1",
   "description": "If you have ever tried printing a webpage or converting it to a multipage PDF, you've encountered this issue: More often than not the print dialogue completely massacres the entire website.",
   "main": "background.js",
   "scripts": {

@@ -4,12 +4,13 @@
  * File Created:  Saturday, 14th December 2019 3:18:56 pm
  * Author(s):     Paul Martin, Alexandra Purcarea
  *
- * Last Modified: Sunday, 19th April 2020 5:10:59 pm
+ * Last Modified: Wednesday, 22nd April 2020 3:39:39 pm
  * Modified By:   Paul Martin
  */
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   switch (request.message) {
+    // Get values
     case 'viewport_width':
       sendResponse(getViewportWidth());
       break;
@@ -22,10 +23,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       sendResponse(getPageHeight());
       break;
 
+    case 'device_pixel_ratio':
+      sendResponse(window.devicePixelRatio);
+      break;
+
     case 'initial_scroll_position':
       sendResponse([window.scrollX, window.scrollY]);
       break;
 
+    // Actions
     case 'scroll_to_position': {
       const [x, y] = request.data;
       window.scrollTo(x, y);
@@ -55,6 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       }
       break;
 
+    // Changes to page
     case 'hide_scrollbar':
       {
         const styleElement = document.createElement('style');
