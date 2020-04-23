@@ -4,11 +4,15 @@
 
 **_What you see is what you get!_**
 
-If you have ever tried printing a webpage or converting it to a multipage PDF, you've encountered this issue: More often than not the print dialogue completely massacres the entire website.
+If you have ever tried printing a webpage or converting it to a multipage PDF, you've probably encountered this issue: More often than not what you end up printing looks quite different to the actual website.
 
-But how can it be that in a world of self-driving cars and quantum computers, you still can't properly print websites?
+This extension is for when your browser's built-in print function fails you.
 
-This is why, together with my good friend [Alexandra](https://github.com/alexandrapurcarea), I decided to tackle this very problem and develop a simple Chrome extension that enables the printing of webpages as is.
+How can it be that in a world of self-driving cars and quantum computers, you still can't properly print websites? That is why, together with my good friend [Alexandra](https://github.com/alexandrapurcarea), I decided to tackle this very problem and develop a simple Chrome extension that enables the printing of webpages as is.
+
+## Usage
+
+To convert the current tab to PDF, just click on the extension in your address bar and a print dialogue will open in a pop-up window. You can now either print the website or save it as a pdf.
 
 ## Installation
 
@@ -19,18 +23,20 @@ This is why, together with my good friend [Alexandra](https://github.com/alexand
 5. Load unpacked extension
 6. Select the directory that was created when cloning this repo
 
-## Usage
+## Examples
 
-To convert the current tab to PDF, just click on the extension in your address bar and a new window containing screenshots of the webpage. You can now print this new window (and/or download as a PDF). Just close it once you're done.
+|                                                  |       Default Chrome print dialogue        |           PDFit print dialogue           |
+| :----------------------------------------------: | :----------------------------------------: | :--------------------------------------: |
+|        [apple.com](https://www.apple.com)        |    ![](examples/apple.com_default.png)     |    ![](examples/apple.com_pdfit.png)     |
+|       [github.com](https://www.github.com)       |    ![](examples/github.com_default.png)    |    ![](examples/github.com_pdfit.png)    |
+| [store.google.com](https://www.store.google.com) | ![](examples/store.google.com_default.png) | ![](examples/store.google.com_pdfit.png) |
 
 ## Todo
 
+- [ ] Dynamically slice the screenshots to completely fill the A4 pages
 - [x] Create a logo/icon
-- [x] Return to the user's scroll position before capturing
-- [x] Don't capture the scroll bar
 - [x] Automatically open the print dialogue in new window
   - [x] Close window once printed
-- [ ] Dynamically slice the screenshots to completely fill the A4 pages
 - [x] Only capture the middle portion of the screen. That way the navbar will be captured only once.
 - [x] Delete duplicated section at the bottom of the document
 
